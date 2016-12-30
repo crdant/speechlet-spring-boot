@@ -1,0 +1,17 @@
+NearestStopIntent What is the nearest stop to {address}
+NearestStopIntent What is the nearest {mode} stop to {address}
+NearestStopIntent What is the nearest stop to {business}
+NearestStopIntent Where can I catch the T near {business}
+NearestStopIntent Where can I catch a {mode} near {address}
+NearestStopIntent Where can I catch a {mode} near {business}
+NearestStopIntent Where can I get the T near {business}
+NearestStopIntent Where can I get a {mode} near {address}
+NearestStopIntent Where can I get a {mode} near {business}
+NearestStopIntent What is the nearest stop to {business}
+NearestStopIntent What is the nearest {mode} stop to {business}
+RoutesAtStopIntent What buses stop at {stopName}
+RoutesAtStopIntent What trains stop at {stopName}
+RoutesAtStopIntent What stops at {stopName}
+RoutesAtStopIntent What buses stop at {stopId}
+RoutesAtStopIntent What trains stop at {stopId}
+RoutesAtStopIntent What stops at {stopId}

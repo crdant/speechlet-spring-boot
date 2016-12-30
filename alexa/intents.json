@@ -1,0 +1,46 @@
+{
+  "intents": [
+    {
+      "intent": "NearestStopIntent",
+      "slots": [
+        {
+          "name": "mode",
+          "type": "MODE"
+        },
+        {
+          "name": "address",
+          "type": "AMAZON.PostalAddress"
+        },
+        {
+          "name": "business",
+          "type": "AMAZON.LocalBusiness"
+        }
+      ]
+    },
+    {
+      "intent": "RoutesAtStopIntent",
+      "slots": [
+        {
+          "name": "mode",
+          "type": "MODE"
+        },
+        {
+          "name": "stopName",
+          "type": "AMAZON.LandmarksOrHistoricalBuildings"
+        },
+        {
+          "name": "stopId",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "HelpIntent",
+      "slots": []
+    },
+    {
+      "intent": "StopIntent",
+      "slots": []
+    }
+  ]
+}
