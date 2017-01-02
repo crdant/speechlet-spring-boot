@@ -7,12 +7,14 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.cloudfoundry:cf-gradle-plugin:1.1.2")
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'cloudfoundry'
 
 jar {
 	baseName = 'tfinder'
@@ -27,14 +29,25 @@ repositories {
 	maven { url "https://repo.spring.io/milestone" }
 }
 
+cloudfoundry {
+    target = "https://api.run.pivotal.io"
+    space = "crdant"
+    uri = "tfinder.cfapps.io"
+    memory = 512
+    instances = 1
+}
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.boot:spring-boot-starter-cache')
-	compile('org.springframework.cloud:spring-cloud-starter-eureka')
+    compile('org.springframework.cloud:spring-cloud-starter-eureka')
 	compile('org.springframework.cloud:spring-cloud-starter-hystrix')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('com.amazon.alexa:alexa-skills-kit:1.2')
+    compile('org.springframework.boot:spring-boot-starter-web')
+	compile('com.amazon.alexa:alexa-skills-kit:1.2') {
+        exclude group: 'org.slf4j'
+        exclude group: 'log4j'
+    }
+    compile('com.google.maps:google-maps-services:0.1.17')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
@@ -43,3 +56,5 @@ dependencyManagement {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Camden.BUILD-SNAPSHOT"
 	}
 }
+
+task deploy(dependsOn: ['build', 'cfPush'])
