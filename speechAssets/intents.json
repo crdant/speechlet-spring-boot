@@ -10,10 +10,6 @@
         {
           "name": "address",
           "type": "AMAZON.PostalAddress"
-        },
-        {
-          "name": "business",
-          "type": "AMAZON.LocalBusiness"
         }
       ]
     },
