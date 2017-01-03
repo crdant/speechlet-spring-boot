@@ -1,10 +1,14 @@
 NearestStopIntent What is the nearest stop to {address}
 NearestStopIntent What is the nearest {mode} stop to {address}
+NearestStopIntent What stop is near {address}
+NearestStopIntent What stop is nearest to {address}
+NearestStopIntent What stop is closest to {address}
+NearestStopIntent What stop is close to {address}
 NearestStopIntent Where can I get a {mode} near {address}
 NearestStopIntent What is the nearest {mode} stop to {address}
 RoutesAtStopIntent What buses stop at {stopName}
 RoutesAtStopIntent What trains stop at {stopName}
 RoutesAtStopIntent What stops at {stopName}
-RoutesAtStopIntent What buses stop at {stopId}
-RoutesAtStopIntent What trains stop at {stopId}
-RoutesAtStopIntent What stops at {stopId}
+RoutesAtStopIntent What {mode} stop at {stopId}
+RoutesAtStopIntent What {mode} stop at {stopId}
+RoutesAtStopIntent What {mode} stop at {stopId}
