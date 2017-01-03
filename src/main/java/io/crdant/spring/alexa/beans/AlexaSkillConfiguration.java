@@ -1,8 +1,8 @@
-package io.crdant.tfinder.beans;
+package io.crdant.spring.alexa.beans;
 
-import io.crdant.tfinder.bind.annotation.SlotArgumentResolver;
-import io.crdant.tfinder.web.method.IntentRequestMappingHandlerMapping;
-import io.crdant.tfinder.web.method.SpeechletMessageConverter;
+import io.crdant.spring.alexa.web.annotation.SlotArgumentResolver;
+import io.crdant.spring.alexa.web.IntentRequestMappingHandlerMapping;
+import io.crdant.spring.alexa.web.method.SpeechletMessageConverter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

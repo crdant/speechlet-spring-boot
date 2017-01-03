@@ -1,4 +1,4 @@
-package io.crdant.spring.alexa.bind.annotation;
+package io.crdant.spring.alexa.web.annotation;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;

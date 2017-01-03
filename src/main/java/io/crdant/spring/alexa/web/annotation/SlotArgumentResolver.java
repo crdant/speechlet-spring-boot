@@ -1,4 +1,4 @@
-package io.crdant.spring.alexa.bind.annotation;
+package io.crdant.spring.alexa.web.annotation;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

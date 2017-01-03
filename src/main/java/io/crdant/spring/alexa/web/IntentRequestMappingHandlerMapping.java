@@ -1,8 +1,8 @@
-package io.crdant.tfinder.web.method;
+package io.crdant.spring.alexa.web;
 
-import io.crdant.tfinder.bind.annotation.IntentController;
-import io.crdant.tfinder.bind.annotation.IntentMapping;
-import io.crdant.tfinder.condition.IntentRequestCondition;
+import io.crdant.spring.alexa.web.annotation.IntentController;
+import io.crdant.spring.alexa.web.annotation.IntentMapping;
+import io.crdant.spring.alexa.condition.IntentRequestCondition;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
