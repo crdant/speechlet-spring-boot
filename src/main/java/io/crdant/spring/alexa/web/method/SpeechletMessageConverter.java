@@ -1,8 +1,7 @@
-package io.crdant.tfinder.web.method;
+package io.crdant.spring.alexa.web.method;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;
-import com.amazon.speech.speechlet.CoreSpeechletRequest;
 import com.amazon.speech.speechlet.SpeechletRequest;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import org.springframework.http.HttpInputMessage;
