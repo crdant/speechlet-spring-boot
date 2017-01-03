@@ -1,7 +1,7 @@
 package io.crdant.spring.alexa.beans;
 
-import io.crdant.spring.alexa.web.annotation.SlotArgumentResolver;
 import io.crdant.spring.alexa.web.IntentRequestMappingHandlerMapping;
+import io.crdant.spring.alexa.web.annotation.SlotArgumentResolver;
 import io.crdant.spring.alexa.web.method.SpeechletMessageConverter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import java.util.List;
 
 @Configuration
-public class AlexaSkillConfiguration extends WebMvcConfigurerAdapter {
+public class AlexaSkillConfiguration extends WebMvcConfigurerAdapter  {
 
     @Bean
     public FilterRegistrationBean speechletFilterRegistrationBean() {
@@ -22,11 +22,6 @@ public class AlexaSkillConfiguration extends WebMvcConfigurerAdapter {
         registrationBean.setFilter(speechletFilter);
         registrationBean.setOrder(1);
         return registrationBean;
-    }
-
-    @Bean
-    public IntentRequestMappingHandlerMapping intentRequestHandlerMapping () {
-        return new IntentRequestMappingHandlerMapping();
     }
 
     @Override
@@ -38,4 +33,5 @@ public class AlexaSkillConfiguration extends WebMvcConfigurerAdapter {
     public HttpMessageConverter speechletMessageConverter() {
         return new SpeechletMessageConverter();
     }
+
 }
