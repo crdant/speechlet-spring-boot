@@ -1,9 +1,8 @@
-package io.crdant.tfinder.util;
+package io.crdant.spring.alexa.util;
 
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.SimpleCard;
-import org.springframework.beans.factory.annotation.Value;
 
 public class ResponseUtils {
     public static SpeechletResponse simpleTextResponse(String text) {

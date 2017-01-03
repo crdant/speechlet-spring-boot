@@ -1,4 +1,4 @@
-package io.crdant.tfinder.util;
+package io.crdant.spring.alexa.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,7 +9,6 @@ import org.springframework.web.util.WebUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.CharBuffer;
 
 public class RequestUtils {
     public static JsonNode getRequestJson(HttpServletRequest request) throws IOException {
