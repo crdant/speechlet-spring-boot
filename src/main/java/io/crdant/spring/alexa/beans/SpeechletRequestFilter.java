@@ -1,4 +1,4 @@
-package io.crdant.tfinder.beans;
+package io.crdant.spring.alexa.beans;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
