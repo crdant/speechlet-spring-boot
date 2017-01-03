@@ -6,7 +6,6 @@ import io.crdant.spring.alexa.util.RequestUtils;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpInputMessage;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.WebUtils;
@@ -36,9 +35,7 @@ public class IntentRequestCondition implements RequestCondition<IntentRequestCon
     @Override
     public IntentRequestCondition getMatchingCondition(HttpServletRequest request) {
         IntentRequestCondition condition = null ;
-        System.out.println("request actual type: " + request.getClass().getCanonicalName());
         try {
-            HttpInputMessage x = (HttpInputMessage) request ;
             // if it's not json then it's not an Alexa request
             if ( !request.getContentType().equals(ContentType.APPLICATION_JSON) ) return condition ;
             logger.debug("Validating if the request contains an Alexa intent");
@@ -87,7 +84,11 @@ public class IntentRequestCondition implements RequestCondition<IntentRequestCon
 
     @Override
     public int compareTo(IntentRequestCondition other, HttpServletRequest request) {
-        return (other.intents.size() - this.intents.size());
+        int same = 0;
+        for ( String intent : other.intents ) {
+            if ( !this.intents.contains(intent) ) return -1 ;
+        }
+        return 0;
     }
 
 }
