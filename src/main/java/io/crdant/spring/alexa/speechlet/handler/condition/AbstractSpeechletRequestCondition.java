@@ -4,14 +4,14 @@ import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.speechlet.Context;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletRequest;
+import io.crdant.spring.alexa.speechlet.web.SpeechletServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
-import org.springframework.web.servlet.mvc.condition.RequestCondition;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
 
 public abstract class AbstractSpeechletRequestCondition<T extends AbstractSpeechletRequestCondition<T>> extends AbstractRequestCondition<T> {
 
@@ -19,20 +19,12 @@ public abstract class AbstractSpeechletRequestCondition<T extends AbstractSpeech
 
     @Override
     public T getMatchingCondition(HttpServletRequest request) {
-        try {
-            byte[] buffer = IOUtils.toByteArray(request.getInputStream());
-            SpeechletRequestEnvelope<?> requestEnvelope = SpeechletRequestEnvelope.fromJson(buffer);
-            Context speechletContext = requestEnvelope.getContext();
-            Session speechletSession = requestEnvelope.getSession();
-            SpeechletRequest speechletRequest = requestEnvelope.getRequest();
-            if ( logger.isDebugEnabled() ) {
-                logger.debug("Mapping a request for a speechlet request of type " + speechletRequest.getClass().getName());
-            }
-            return getMatchingConditionInternal(speechletContext, speechletSession, speechletRequest);
-        } catch ( Exception e ) {
-            logger.error("Caught an exception that needs to be handled better: " + e.getMessage());
-        }
-        return null;
+        SpeechletServletRequest speechletServletRequest = (SpeechletServletRequest) WebUtils.getNativeRequest(request, SpeechletServletRequest.class);
+        if ( speechletServletRequest == null ) return null ;
+        Context speechletContext = speechletServletRequest.getSpeechletContext();
+        Session speechletSession = speechletServletRequest.getSpeechletSession();
+        SpeechletRequest speechletRequest = speechletServletRequest.getSpeechletRequest();
+        return getMatchingConditionInternal(speechletContext, speechletSession, speechletRequest);
     }
 
     abstract protected T getMatchingConditionInternal(Context speechletContext, Session speechletSession, SpeechletRequest speechletRequest ) ;
