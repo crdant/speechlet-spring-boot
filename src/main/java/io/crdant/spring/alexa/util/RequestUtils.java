@@ -12,11 +12,15 @@ import java.io.Reader;
 
 public class RequestUtils {
     public static JsonNode getRequestJson(HttpServletRequest request) throws IOException {
-        return getRequestJson(WebUtils.getNativeRequest(request, ContentCachingRequestWrapper.class));
+        return getRequestJson((ContentCachingRequestWrapper) WebUtils.getNativeRequest(request, ContentCachingRequestWrapper.class));
     }
 
     public static JsonNode getRequestJson (NativeWebRequest request) throws IOException {
         ContentCachingRequestWrapper wrapper = request.getNativeRequest(ContentCachingRequestWrapper.class);
+        return getRequestJson(wrapper);
+    }
+
+    public static JsonNode getRequestJson (ContentCachingRequestWrapper wrapper) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode bodyRoot = null ;
         if ( ( wrapper.getContentAsByteArray() == null ) || ( wrapper.getContentAsByteArray().length == 0 ) ) {
