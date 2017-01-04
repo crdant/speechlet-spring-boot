@@ -1,4 +1,4 @@
-package io.crdant.spring.alexa.web.annotation;
+package io.crdant.spring.alexa.annotation;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.Mapping;

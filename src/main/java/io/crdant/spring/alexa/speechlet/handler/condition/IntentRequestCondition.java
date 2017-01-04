@@ -1,9 +1,8 @@
-package io.crdant.spring.alexa.condition;
+package io.crdant.spring.alexa.speechlet.handler.condition;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.crdant.spring.alexa.util.RequestUtils;
-import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -18,7 +17,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class IntentRequestCondition implements RequestCondition<IntentRequestCondition> {
+public class IntentRequestCondition extends AbstractSpeechletRequestCondition<IntentRequestCondition> {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Set<String> intents ;
@@ -89,4 +88,8 @@ public class IntentRequestCondition implements RequestCondition<IntentRequestCon
         return 0;
     }
 
+    @Override
+    protected Collection<?> getContent() {
+        return intents ;
+    }
 }

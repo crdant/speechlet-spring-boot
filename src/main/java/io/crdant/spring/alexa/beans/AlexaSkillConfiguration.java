@@ -1,12 +1,7 @@
 package io.crdant.spring.alexa.beans;
 
-import io.crdant.spring.alexa.web.IntentRequestMappingHandlerMapping;
-import io.crdant.spring.alexa.web.annotation.SlotArgumentResolver;
-import io.crdant.spring.alexa.web.method.SpeechletMessageConverter;
-import org.springframework.aop.Advisor;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
-import org.springframework.aop.interceptor.CustomizableTraceInterceptor;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
+import io.crdant.spring.alexa.annotation.SlotArgumentResolver;
+import io.crdant.spring.alexa.speechlet.method.SpeechletMessageConverter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
