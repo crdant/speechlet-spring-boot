@@ -6,14 +6,18 @@ import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletRequest;
 import org.apache.commons.io.IOUtils;
 
+import javax.servlet.ReadListener;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public class SpeechletServletRequest extends HttpServletRequestWrapper {
     private Context speechletContext ;
     private Session speechletSession ;
     private SpeechletRequest speechletRequest;
-    private SpeechletRequestEnvelope<?> requestEnvelope ;
+    private byte[] serializedRequest ;
 
     public SpeechletServletRequest(HttpServletRequest request) {
         super(request);
@@ -22,8 +26,8 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
         SpeechletRequest incomingSpeechletRequest ;
 
         try {
-            byte[] buffer = IOUtils.toByteArray(request.getInputStream());
-            this.requestEnvelope = SpeechletRequestEnvelope.fromJson(buffer);
+            this.serializedRequest = IOUtils.toByteArray(request.getInputStream());
+            SpeechletRequestEnvelope<?> requestEnvelope = SpeechletRequestEnvelope.fromJson(serializedRequest);
 
             incomingSpeechletContext = requestEnvelope.getContext();
             incomingSpeechletSession = requestEnvelope.getSession();
@@ -47,6 +51,10 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
 
     public SpeechletRequest getSpeechletRequest() {
         return speechletRequest;
+    }
+
+    public byte[] getSerializedRequest() {
+        return serializedRequest;
     }
 
     public <T> T getSpeechletRequest(Class<T> requiredType) {
