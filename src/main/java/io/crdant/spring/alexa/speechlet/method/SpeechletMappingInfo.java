@@ -1,12 +1,7 @@
 package io.crdant.spring.alexa.speechlet.method;
 
-import io.crdant.spring.alexa.speechlet.handler.condition.LaunchRequestCondition;
-import io.crdant.spring.alexa.speechlet.handler.condition.SessionEndRequestCondition;
-import io.crdant.spring.alexa.speechlet.handler.condition.SessionStartRequestCondition;
-import io.crdant.spring.alexa.speechlet.handler.condition.SpeechletRequestCondition;
-import io.crdant.spring.alexa.speechlet.handler.condition.IntentRequestCondition;
-
-import org.springframework.web.servlet.mvc.condition.RequestCondition ;
+import io.crdant.spring.alexa.speechlet.handler.condition.*;
+import org.springframework.web.servlet.mvc.condition.RequestCondition;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,13 +9,13 @@ public class SpeechletMappingInfo implements RequestCondition<SpeechletMappingIn
     private final String name ;
     private final SpeechletRequestCondition speechletCondition ;
     private final LaunchRequestCondition launchCondition ;
-    private final SessionStartRequestCondition startCondition ;
+    private final SessionStartedRequestCondition startCondition ;
     private final IntentRequestCondition intentsCondition ;
-    private final SessionEndRequestCondition endCondition ;
+    private final SessionEndedRequestCondition endCondition ;
 
     public SpeechletMappingInfo(String name, SpeechletRequestCondition speechletCondition, LaunchRequestCondition launchCondition,
-                                SessionStartRequestCondition startCondition, IntentRequestCondition intentsCondition,
-                                SessionEndRequestCondition endCondition)
+                                SessionStartedRequestCondition startCondition, IntentRequestCondition intentsCondition,
+                                SessionEndedRequestCondition endCondition)
     {
         this.name = name;
         this.speechletCondition = speechletCondition;
@@ -57,7 +52,7 @@ public class SpeechletMappingInfo implements RequestCondition<SpeechletMappingIn
         return launchCondition;
     }
 
-    public SessionStartRequestCondition getStartCondition() {
+    public SessionStartedRequestCondition getStartCondition() {
         return startCondition;
     }
 
@@ -65,7 +60,7 @@ public class SpeechletMappingInfo implements RequestCondition<SpeechletMappingIn
         return intentsCondition;
     }
 
-    public SessionEndRequestCondition getEndCondition() {
+    public SessionEndedRequestCondition getEndCondition() {
         return endCondition;
     }
 
