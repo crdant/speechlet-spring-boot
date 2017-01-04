@@ -1,5 +1,8 @@
 package io.crdant.spring.alexa.speechlet.handler.condition;
 
+import com.amazon.speech.speechlet.Context;
+import com.amazon.speech.speechlet.Session;
+import com.amazon.speech.speechlet.SpeechletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;
@@ -23,6 +26,11 @@ public class SpeechletRequestCondition extends AbstractSpeechletRequestCondition
     public SpeechletRequestCondition(Collection<String> applicationIds) {
         this.applicationIds = new LinkedHashSet<String>() ;
         this.applicationIds.addAll(applicationIds) ;
+    }
+
+    @Override
+    protected SpeechletRequestCondition getMatchingConditionInternal(Context speechletContext, Session speechletSession, SpeechletRequest speechletRequest) {
+        return null;
     }
 
     @Override
