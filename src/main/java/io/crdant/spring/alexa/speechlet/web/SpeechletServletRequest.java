@@ -5,6 +5,8 @@ import com.amazon.speech.speechlet.Context;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletRequest;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -14,6 +16,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 public class SpeechletServletRequest extends HttpServletRequestWrapper {
+    public static final Logger logger = LoggerFactory.getLogger(SpeechletServletRequest.class);
+
     private Context speechletContext ;
     private Session speechletSession ;
     private SpeechletRequest speechletRequest;
@@ -36,9 +40,15 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
             this.speechletContext = speechletContext;
             this.speechletSession = speechletSession;
             this.speechletRequest = speechletRequest;
+            logger.info("Processed speechlet request and made its components available as part of the request.");
+
         } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot create a speechlet from the provided HTTP request");
+            logger.info("Not a speechlet request. Request content cached and available for reading.");
         }
+    }
+
+    public boolean isForSpeechlet () {
+        return getSpeechletContext() != null && getSpeechletSession() != null && getSpeechletRequest() != null ;
     }
 
     public Context getSpeechletContext() {
