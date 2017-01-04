@@ -1,7 +1,7 @@
 package io.crdant.spring.alexa.web;
 
-import io.crdant.spring.alexa.speechlet.handler.condition.IntentRequestCondition;
 import io.crdant.spring.alexa.annotation.IntentMapping;
+import io.crdant.spring.alexa.speechlet.handler.condition.IntentRequestCondition;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Controller;

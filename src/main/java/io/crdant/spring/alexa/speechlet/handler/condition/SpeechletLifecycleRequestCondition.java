@@ -1,6 +1,9 @@
 package io.crdant.spring.alexa.speechlet.handler.condition;
 
-import com.amazon.speech.speechlet.*;
+import com.amazon.speech.speechlet.Application;
+import com.amazon.speech.speechlet.Context;
+import com.amazon.speech.speechlet.Session;
+import com.amazon.speech.speechlet.SpeechletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

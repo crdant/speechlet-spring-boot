@@ -1,8 +1,10 @@
 package io.crdant.spring.alexa.speechlet.handler.condition;
 
-import com.amazon.speech.speechlet.*;
+import com.amazon.speech.speechlet.Context;
+import com.amazon.speech.speechlet.LaunchRequest;
+import com.amazon.speech.speechlet.Session;
+import com.amazon.speech.speechlet.SpeechletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.Set;
 
