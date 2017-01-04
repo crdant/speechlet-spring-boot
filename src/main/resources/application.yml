@@ -1,7 +1,8 @@
 ---
-spring:
-  speechlet:
-    id: a8b107b7-4e48-4187-873b-e68f1ae173df
+speechlet:
+  id: a8b107b7-4e48-4187-873b-e68f1ae173df
+  validation.disable: true
+  timestamp.tolerance: 10
 
 logging:
     level:
