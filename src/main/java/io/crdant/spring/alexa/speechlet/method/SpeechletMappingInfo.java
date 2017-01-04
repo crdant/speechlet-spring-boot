@@ -1,42 +1,84 @@
 package io.crdant.spring.alexa.speechlet.method;
 
 import io.crdant.spring.alexa.speechlet.handler.condition.*;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class SpeechletMappingInfo implements RequestCondition<SpeechletMappingInfo> {
     private final String name ;
-    private final SpeechletRequestCondition speechletCondition ;
-    private final LaunchRequestCondition launchCondition ;
-    private final SessionStartedRequestCondition startCondition ;
-    private final IntentRequestCondition intentsCondition ;
-    private final SessionEndedRequestCondition endCondition ;
+    private final SpeechletRequestCondition speechletRequestCondition;
+    private final LaunchRequestCondition launchRequestCondition;
+    private final SessionStartedRequestCondition sessionStartedRequestCondition;
+    private final IntentRequestCondition intentRequestCondition;
+    private final SessionEndedRequestCondition sessionEndedRequestCondition;
 
-    public SpeechletMappingInfo(String name, SpeechletRequestCondition speechletCondition, LaunchRequestCondition launchCondition,
-                                SessionStartedRequestCondition startCondition, IntentRequestCondition intentsCondition,
-                                SessionEndedRequestCondition endCondition)
+    public SpeechletMappingInfo(String name, SpeechletRequestCondition speechletRequestCondition, LaunchRequestCondition launchRequestCondition,
+                                SessionStartedRequestCondition sessionStartedRequestCondition, IntentRequestCondition intentRequestCondition,
+                                SessionEndedRequestCondition sessionEndedRequestCondition)
     {
         this.name = name;
-        this.speechletCondition = speechletCondition;
-        this.launchCondition = launchCondition;
-        this.startCondition = startCondition;
-        this.intentsCondition = intentsCondition;
-        this.endCondition = endCondition;
+        this.speechletRequestCondition = speechletRequestCondition;
+        this.launchRequestCondition = launchRequestCondition;
+        this.sessionStartedRequestCondition = sessionStartedRequestCondition;
+        this.intentRequestCondition = intentRequestCondition;
+        this.sessionEndedRequestCondition = sessionEndedRequestCondition;
     }
 
     @Override
     public SpeechletMappingInfo combine(SpeechletMappingInfo other) {
-        return null;
+        String name = this.name + "::" + other.getName() ;
+        SpeechletRequestCondition speechlet = this.speechletRequestCondition.combine(other.getSpeechletRequestCondition());
+        LaunchRequestCondition launch = this.launchRequestCondition.combine(other.getLaunchRequestCondition());
+        SessionStartedRequestCondition started = this.sessionStartedRequestCondition.combine(other.getSessionStartedRequestCondition());
+        IntentRequestCondition intent = this.intentRequestCondition.combine(other.getIntentRequestCondition());
+        SessionEndedRequestCondition ended = this.sessionEndedRequestCondition.combine(other.getSessionEndedRequestCondition());
+
+        return new SpeechletMappingInfo(this.name, speechlet, launch, started, intent, ended);
     }
 
     @Override
     public SpeechletMappingInfo getMatchingCondition(HttpServletRequest request) {
-        return null;
+        SpeechletRequestCondition speechlet = this.speechletRequestCondition.getMatchingCondition(request);
+
+        if (speechlet == null ) {
+            return null;
+        }
+
+        LaunchRequestCondition launch = this.launchRequestCondition.getMatchingCondition(request);
+        SessionStartedRequestCondition started = this.sessionStartedRequestCondition.getMatchingCondition(request);
+        IntentRequestCondition intent = this.intentRequestCondition.getMatchingCondition(request);
+        SessionEndedRequestCondition ended = this.sessionEndedRequestCondition.getMatchingCondition(request);
+
+        return new SpeechletMappingInfo(this.name, speechlet, launch, started, intent, ended);
     }
 
     @Override
     public int compareTo(SpeechletMappingInfo other, HttpServletRequest request) {
+        int result;
+
+        result = this.speechletRequestCondition.compareTo(other.getSpeechletRequestCondition(), request);
+        if (result != 0) {
+            return result;
+        }
+        result = this.launchRequestCondition.compareTo(other.getLaunchRequestCondition(), request);
+        if (result != 0) {
+            return result;
+        }
+        result = this.sessionStartedRequestCondition.compareTo(other.getSessionStartedRequestCondition(), request);
+        if (result != 0) {
+            return result;
+        }
+        result = this.intentRequestCondition.compareTo(other.getIntentRequestCondition(), request);
+        if (result != 0) {
+            return result;
+        }
+        result = this.sessionEndedRequestCondition.compareTo(other.getSessionEndedRequestCondition(), request);
+        if (result != 0) {
+            return result;
+        }
+
         return 0;
     }
 
@@ -44,24 +86,24 @@ public class SpeechletMappingInfo implements RequestCondition<SpeechletMappingIn
         return name;
     }
 
-    public SpeechletRequestCondition getSpeechletCondition() {
-        return speechletCondition;
+    public SpeechletRequestCondition getSpeechletRequestCondition() {
+        return speechletRequestCondition;
     }
 
-    public LaunchRequestCondition getLaunchCondition() {
-        return launchCondition;
+    public LaunchRequestCondition getLaunchRequestCondition() {
+        return launchRequestCondition;
     }
 
-    public SessionStartedRequestCondition getStartCondition() {
-        return startCondition;
+    public SessionStartedRequestCondition getSessionStartedRequestCondition() {
+        return sessionStartedRequestCondition;
     }
 
-    public IntentRequestCondition getIntentsCondition() {
-        return intentsCondition;
+    public IntentRequestCondition getIntentRequestCondition() {
+        return intentRequestCondition;
     }
 
-    public SessionEndedRequestCondition getEndCondition() {
-        return endCondition;
+    public SessionEndedRequestCondition getSessionEndedRequestCondition() {
+        return sessionEndedRequestCondition;
     }
 
     @Override
@@ -72,25 +114,25 @@ public class SpeechletMappingInfo implements RequestCondition<SpeechletMappingIn
         SpeechletMappingInfo that = (SpeechletMappingInfo) o;
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (speechletCondition != null ? !speechletCondition.equals(that.speechletCondition) : that.speechletCondition != null)
+        if (speechletRequestCondition != null ? !speechletRequestCondition.equals(that.speechletRequestCondition) : that.speechletRequestCondition != null)
             return false;
-        if (launchCondition != null ? !launchCondition.equals(that.launchCondition) : that.launchCondition != null)
+        if (launchRequestCondition != null ? !launchRequestCondition.equals(that.launchRequestCondition) : that.launchRequestCondition != null)
             return false;
-        if (startCondition != null ? !startCondition.equals(that.startCondition) : that.startCondition != null)
+        if (sessionStartedRequestCondition != null ? !sessionStartedRequestCondition.equals(that.sessionStartedRequestCondition) : that.sessionStartedRequestCondition != null)
             return false;
-        if (intentsCondition != null ? !intentsCondition.equals(that.intentsCondition) : that.intentsCondition != null)
+        if (intentRequestCondition != null ? !intentRequestCondition.equals(that.intentRequestCondition) : that.intentRequestCondition != null)
             return false;
-        return endCondition != null ? endCondition.equals(that.endCondition) : that.endCondition == null;
+        return sessionEndedRequestCondition != null ? sessionEndedRequestCondition.equals(that.sessionEndedRequestCondition) : that.sessionEndedRequestCondition == null;
     }
 
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (speechletCondition != null ? speechletCondition.hashCode() : 0);
-        result = 31 * result + (launchCondition != null ? launchCondition.hashCode() : 0);
-        result = 31 * result + (startCondition != null ? startCondition.hashCode() : 0);
-        result = 31 * result + (intentsCondition != null ? intentsCondition.hashCode() : 0);
-        result = 31 * result + (endCondition != null ? endCondition.hashCode() : 0);
+        result = 31 * result + (speechletRequestCondition != null ? speechletRequestCondition.hashCode() : 0);
+        result = 31 * result + (launchRequestCondition != null ? launchRequestCondition.hashCode() : 0);
+        result = 31 * result + (sessionStartedRequestCondition != null ? sessionStartedRequestCondition.hashCode() : 0);
+        result = 31 * result + (intentRequestCondition != null ? intentRequestCondition.hashCode() : 0);
+        result = 31 * result + (sessionEndedRequestCondition != null ? sessionEndedRequestCondition.hashCode() : 0);
         return result;
     }
 
@@ -98,11 +140,11 @@ public class SpeechletMappingInfo implements RequestCondition<SpeechletMappingIn
     public String toString() {
         return "SpeechletMappingInfo{" +
                 "name='" + name + '\'' +
-                ", speechletCondition=" + speechletCondition +
-                ", launchCondition=" + launchCondition +
-                ", startCondition=" + startCondition +
-                ", intentsCondition=" + intentsCondition +
-                ", endCondition=" + endCondition +
+                ", speechletRequestCondition=" + speechletRequestCondition +
+                ", launchRequestCondition=" + launchRequestCondition +
+                ", sessionStartedRequestCondition=" + sessionStartedRequestCondition +
+                ", intentRequestCondition=" + intentRequestCondition +
+                ", sessionEndedRequestCondition=" + sessionEndedRequestCondition +
                 '}';
     }
 
