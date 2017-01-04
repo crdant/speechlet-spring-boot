@@ -1,7 +1,10 @@
 package io.crdant.spring.alexa.speechlet.web.filter;
 
+import com.amazon.speech.Sdk;
+import com.amazon.speech.speechlet.authentication.SpeechletRequestSignatureVerifier;
 import io.crdant.spring.alexa.speechlet.web.SpeechletServletRequest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,11 +19,9 @@ public class SpeechletRequestServletFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-
-        boolean isFirstRequest = !isAsyncDispatch(request);
+            throws ServletException, IOException
+    {
         HttpServletRequest speechletRequest = request;
-
         if (!(request instanceof SpeechletServletRequest)) {
             speechletRequest = new SpeechletServletRequest(request);
         }
@@ -28,3 +29,4 @@ public class SpeechletRequestServletFilter extends OncePerRequestFilter {
     }
 
 }
+
