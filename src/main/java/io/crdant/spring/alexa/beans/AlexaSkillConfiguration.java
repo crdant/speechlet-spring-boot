@@ -14,15 +14,6 @@ import java.util.List;
 @Configuration
 public class AlexaSkillConfiguration extends WebMvcConfigurerAdapter  {
 
-    @Bean
-    public FilterRegistrationBean speechletFilterRegistrationBean() {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-        SpeechletRequestFilter speechletFilter = new SpeechletRequestFilter();
-        registrationBean.setFilter(speechletFilter);
-        registrationBean.setOrder(1);
-        return registrationBean;
-    }
-
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new SlotArgumentResolver());
