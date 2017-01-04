@@ -2,6 +2,7 @@ package io.crdant.spring.alexa.speechlet.web.filter;
 
 import io.crdant.spring.alexa.speechlet.web.SpeechletServletRequest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -10,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Configuration
+@Component
 public class SpeechletRequestServletFilter extends OncePerRequestFilter {
 
     @Override
