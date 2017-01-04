@@ -6,6 +6,7 @@ import io.crdant.spring.alexa.util.RequestUtils;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.WebUtils;
@@ -34,11 +35,11 @@ public class IntentRequestCondition implements RequestCondition<IntentRequestCon
 
     @Override
     public IntentRequestCondition getMatchingCondition(HttpServletRequest request) {
+        logger.debug("Seeing if the condition matches for intent " + intents.iterator().next());
         IntentRequestCondition condition = null ;
         try {
             // if it's not json then it's not an Alexa request
-            if ( !request.getContentType().equals(ContentType.APPLICATION_JSON) ) return condition ;
-            logger.debug("Validating if the request contains an Alexa intent");
+            if ( !request.getContentType().equals(MediaType.APPLICATION_JSON_VALUE) ) return condition ;
             String intent = getRequestIntent(request) ;
             if (  intent != null ) {
                 for ( String mapped  : this.intents ) {
@@ -59,13 +60,10 @@ public class IntentRequestCondition implements RequestCondition<IntentRequestCon
             JsonNode jsonRoot = RequestUtils.getRequestJson(WebUtils.getNativeRequest(request, ContentCachingRequestWrapper.class));
             JsonNode alexaRequest = jsonRoot.get("request");
             if (alexaRequest != null) {
-                logger.debug("JSON request contains the 'request' field, looking for intent");
-                if (alexaRequest.get("type") != null && alexaRequest.get("type").equals("IntentRequest")) {
-                    logger.debug("Request is an intent request");
-                    JsonNode intent = alexaRequest.get("type").get("intent");
+                if (alexaRequest.get("type") != null && alexaRequest.get("type").asText().equals("IntentRequest")) {
+                    JsonNode intent = alexaRequest.get("intent");
                     if (intent != null) {
-                        logger.debug("Request is for intent: " + intent.asText());
-                        return intent.asText();
+                        return intent.get("name").asText();
                     }
                 }
             }
@@ -78,7 +76,7 @@ public class IntentRequestCondition implements RequestCondition<IntentRequestCon
     @Override
     public IntentRequestCondition combine(IntentRequestCondition other) {
         Set<String> intents = new LinkedHashSet<String>(this.intents);
-        intents.addAll(other.intents);
+        intents.addAll(((IntentRequestCondition) other).intents);
         return new IntentRequestCondition(intents);
     }
 
