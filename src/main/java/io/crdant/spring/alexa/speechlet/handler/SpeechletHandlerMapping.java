@@ -1,8 +1,10 @@
 package io.crdant.spring.alexa.speechlet.handler;
 
+import io.crdant.spring.alexa.annotation.Speechlet;
+import io.crdant.spring.alexa.speechlet.method.SpeechletMappingInfo;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 
-import io.crdant.spring.alexa.speechlet.method.SpeechletMappingInfo;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Comparator;
@@ -12,7 +14,7 @@ public class SpeechletHandlerMapping extends AbstractHandlerMethodMapping<Speech
 
     @Override
     protected boolean isHandler(Class<?> beanType) {
-        return false;
+        return AnnotatedElementUtils.hasAnnotation(beanType, Speechlet.class);
     }
 
     @Override
@@ -20,14 +22,22 @@ public class SpeechletHandlerMapping extends AbstractHandlerMethodMapping<Speech
         return null;
     }
 
+    /**
+     * This will always return null, since Speechlets are mapped based on the content of the request rather
+     * than the path.
+     *
+     * @param mapping
+     * @return
+     */
     @Override
     protected Set<String> getMappingPathPatterns(SpeechletMappingInfo mapping) {
+        // paths are irrelevant to a speechlet, we are basing our mappings on the body of the request
         return null;
     }
 
     @Override
     protected SpeechletMappingInfo getMatchingMapping(SpeechletMappingInfo mapping, HttpServletRequest request) {
-        return null;
+        return mapping.getMatchingCondition(request);
     }
 
     @Override
