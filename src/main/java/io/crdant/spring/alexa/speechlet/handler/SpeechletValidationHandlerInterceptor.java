@@ -5,25 +5,27 @@ import com.amazon.speech.speechlet.authentication.SpeechletRequestSignatureVerif
 import com.amazon.speech.speechlet.verifier.TimestampSpeechletRequestVerifier;
 import io.crdant.spring.alexa.speechlet.web.SpeechletServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.TimeUnit;
 
+@Component
 public class SpeechletValidationHandlerInterceptor extends HandlerInterceptorAdapter {
 
-    @Value("speechlet.validation.disable")
-    boolean disable ;
+    @Value("${speechlet.validation.disable}")
+    Boolean disable ;
 
-    @Value("speechlet.timestamp.tolerance")
-    long tolerance ;
+    @Value("${speechlet.timestamp.tolerance}")
+    Long tolerance ;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if ( !(request instanceof SpeechletServletRequest ) ) return false;
         SpeechletServletRequest speechletServletRequest = (SpeechletServletRequest) request ;
-        return disable || ( validSignature(speechletServletRequest) && validTimetamp(speechletServletRequest) );
+        return disable.booleanValue() || ( validSignature(speechletServletRequest) && validTimetamp(speechletServletRequest) );
     }
 
     private boolean validSignature(SpeechletServletRequest request) {
@@ -37,7 +39,7 @@ public class SpeechletValidationHandlerInterceptor extends HandlerInterceptorAda
     }
 
     private boolean validTimetamp(SpeechletServletRequest request) {
-        TimestampSpeechletRequestVerifier verifier = new TimestampSpeechletRequestVerifier(tolerance, TimeUnit.SECONDS);
+        TimestampSpeechletRequestVerifier verifier = new TimestampSpeechletRequestVerifier(tolerance.longValue(), TimeUnit.SECONDS);
         return verifier.verify(request.getSpeechletRequest(), request.getSpeechletSession());
     }
 }
