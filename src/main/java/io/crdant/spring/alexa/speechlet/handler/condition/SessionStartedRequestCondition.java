@@ -29,4 +29,22 @@ public class SessionStartedRequestCondition extends SpeechletLifecycleRequestCon
         return new SessionStartedRequestCondition(applicationIds);
     }
 
+    @Override
+    public String toString() {
+        return "SessionStartedRequestCondition{" +
+                "applicationIds=" + this.getApplicationIds() +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SessionStartedRequestCondition that = (SessionStartedRequestCondition) o;
+
+        return this.getApplicationIds() != null ? this.getApplicationIds().equals(that.getApplicationIds()) : this.getApplicationIds() == null;
+    }
+
 }

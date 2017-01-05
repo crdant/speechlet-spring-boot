@@ -33,4 +33,5 @@ public abstract class AbstractSpeechletRequestCondition<T extends AbstractSpeech
     protected String getToStringInfix() {
         return " || ";
     }
+
 }

@@ -29,4 +29,21 @@ public class SessionEndedRequestCondition extends SpeechletLifecycleRequestCondi
         return new SessionEndedRequestCondition(applicationIds);
     }
 
+    @Override
+    public String toString() {
+        return "SessionEndedRequestCondition{" +
+                "applicationIds=" + this.getApplicationIds() +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SessionEndedRequestCondition that = (SessionEndedRequestCondition) o;
+
+        return this.getApplicationIds() != null ? this.getApplicationIds().equals(that.getApplicationIds()) : this.getApplicationIds() == null;
+    }
 }

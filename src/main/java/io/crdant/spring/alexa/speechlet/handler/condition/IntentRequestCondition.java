@@ -17,14 +17,18 @@ import java.util.Set;
 public class IntentRequestCondition extends AbstractSpeechletRequestCondition<IntentRequestCondition> {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final String applicationId ;
     private final Set<String> intents ;
 
-    public IntentRequestCondition(String... intents) {
+    public IntentRequestCondition(String applicationId, String... intents) {
+        this.applicationId = applicationId ;
         this.intents = new LinkedHashSet<String>() ;
         this.intents.addAll(Arrays.asList(intents));
     }
 
-    public IntentRequestCondition(Collection<String> intents) {
+    public IntentRequestCondition(String applicationId, Collection<String> intents) {
+        this.applicationId = applicationId ;
         this.intents = new LinkedHashSet<String>() ;
         intents.addAll(intents) ;
     }
@@ -47,22 +51,59 @@ public class IntentRequestCondition extends AbstractSpeechletRequestCondition<In
 
     @Override
     public IntentRequestCondition combine(IntentRequestCondition other) {
+        // TO DO: be more elegant
+        if ( this.applicationId != other.applicationId ) return null ;
         Set<String> intents = new LinkedHashSet<String>(this.intents);
         intents.addAll(((IntentRequestCondition) other).intents);
-        return new IntentRequestCondition(intents);
+        return new IntentRequestCondition(applicationId, intents);
     }
 
     @Override
     public int compareTo(IntentRequestCondition other, HttpServletRequest request) {
         int same = 0;
+        if ( !this.applicationId.equals(other.applicationId )) return -1 ;
+
         for ( String intent : other.intents ) {
             if ( !this.intents.contains(intent) ) return -1 ;
         }
         return 0;
     }
 
+    public String getApplicationId() {
+        return applicationId;
+    }
+
     @Override
     protected Collection<?> getContent() {
-        return intents ;
+        return this.intents ;
+    }
+
+    @Override
+    public String toString() {
+        return "IntentRequestCondition{" +
+                "applicationId=" + applicationId +
+                "intents=" + intents +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        IntentRequestCondition that = (IntentRequestCondition) o;
+
+        if (applicationId != null ? !applicationId.equals(that.applicationId) : that.applicationId != null)
+            return false;
+        return intents != null ? intents.equals(that.intents) : that.intents == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (applicationId != null ? applicationId.hashCode() : 0);
+        result = 31 * result + (intents != null ? intents.hashCode() : 0);
+        return result;
     }
 }

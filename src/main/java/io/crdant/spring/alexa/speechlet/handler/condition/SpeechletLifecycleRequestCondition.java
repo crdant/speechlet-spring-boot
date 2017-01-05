@@ -68,4 +68,28 @@ public abstract class SpeechletLifecycleRequestCondition<T extends SpeechletLife
         return 0;
     }
 
+    @Override
+    public String toString() {
+        return "SpeechletLifecycleRequestCondition{" +
+                "applicationIds=" + applicationIds +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SpeechletLifecycleRequestCondition<?> that = (SpeechletLifecycleRequestCondition<?>) o;
+
+        return applicationIds != null ? applicationIds.equals(that.applicationIds) : that.applicationIds == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (applicationIds != null ? applicationIds.hashCode() : 0);
+        return result;
+    }
 }

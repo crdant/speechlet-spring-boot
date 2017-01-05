@@ -29,4 +29,21 @@ public class LaunchRequestCondition extends SpeechletLifecycleRequestCondition<L
         return new LaunchRequestCondition(applicationIds);
     }
 
+    @Override
+    public String toString() {
+        return "LaunchRequestCondition{" +
+                "applicationIds=" + this.getApplicationIds() +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        LaunchRequestCondition that = (LaunchRequestCondition) o;
+
+        return this.getApplicationIds() != null ? this.getApplicationIds().equals(that.getApplicationIds()) : this.getApplicationIds() == null;
+    }
 }
