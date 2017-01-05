@@ -17,16 +17,16 @@ public @interface Speechlet {
 
     /**
      * The Speechlet mapping expressed by this annotation.
-     * <p>This is an alias for {@link #speechlet}. For example
+     * <p>This is an alias for {@link #applicationId}. For example
      * {@code @Speechlet("/foo")} is equivalent to
      * {@code @Speechlet(intent="/foo")}.
      */
-    @AliasFor("speechlet")
+    @AliasFor("applicationId")
     String[] value() default {};
 
     /**
      * The id of the Amazon Alexa skill application that the class services.
      */
     @AliasFor("value")
-    String[] speechlet() default {};
+    String[] applicationId() default {};
 }
