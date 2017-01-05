@@ -1,7 +1,9 @@
-package io.crdant.spring.alexa.speechlet.method;
+package io.crdant.spring.speechlet.method;
 
-import io.crdant.spring.alexa.speechlet.handler.condition.*;
-import org.springframework.http.HttpMethod;
+import io.crdant.spring.speechlet.handler.condition.IntentRequestCondition;
+import io.crdant.spring.speechlet.handler.condition.LaunchRequestCondition;
+import io.crdant.spring.speechlet.handler.condition.SessionEndedRequestCondition;
+import io.crdant.spring.speechlet.handler.condition.SessionStartedRequestCondition;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;
 
 import javax.servlet.http.HttpServletRequest;

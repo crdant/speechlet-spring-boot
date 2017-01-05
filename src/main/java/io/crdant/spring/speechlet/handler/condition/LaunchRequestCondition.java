@@ -1,4 +1,4 @@
-package io.crdant.spring.alexa.speechlet.handler.condition;
+package io.crdant.spring.speechlet.handler.condition;
 
 import com.amazon.speech.speechlet.Context;
 import com.amazon.speech.speechlet.LaunchRequest;

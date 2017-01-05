@@ -1,4 +1,4 @@
-package io.crdant.spring.alexa.speechlet.web;
+package io.crdant.spring.speechlet.web;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.speechlet.Context;
@@ -8,12 +8,8 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 public class SpeechletServletRequest extends HttpServletRequestWrapper {
     public static final Logger logger = LoggerFactory.getLogger(SpeechletServletRequest.class);

@@ -1,10 +1,6 @@
-package io.crdant.spring.alexa.speechlet.web.filter;
+package io.crdant.spring.speechlet.web.filter;
 
-import com.amazon.speech.Sdk;
-import com.amazon.speech.speechlet.authentication.SpeechletRequestSignatureVerifier;
-import io.crdant.spring.alexa.speechlet.web.SpeechletServletRequest;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import io.crdant.spring.speechlet.web.SpeechletServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 

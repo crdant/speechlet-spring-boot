@@ -1,4 +1,4 @@
-package io.crdant.spring.alexa.speechlet.method;
+package io.crdant.spring.speechlet.method;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.json.SpeechletResponseEnvelope;

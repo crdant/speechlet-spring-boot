@@ -3,9 +3,11 @@ package io.crdant.spring.alexa.speechlet.handler;
 import io.crdant.spring.alexa.annotation.*;
 import io.crdant.spring.alexa.speechlet.handler.condition.*;
 import io.crdant.spring.alexa.speechlet.method.SpeechletMappingInfo;
+import io.crdant.spring.alexa.speechlet.web.SpeechletServletRequest;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;
 
@@ -25,6 +27,15 @@ public class SpeechletHandlerMapping extends AbstractHandlerMethodMapping<Speech
                 AnnotatedElementUtils.hasAnnotation(beanType, Launch.class) ||
                 AnnotatedElementUtils.hasAnnotation(beanType, SessionStart.class) ||
                 AnnotatedElementUtils.hasAnnotation(beanType, SessionEnd.class) ;
+    }
+
+
+    @Override
+    protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
+        SpeechletServletRequest speechletRequest = (SpeechletServletRequest) request ;
+        logger.debug("looking up handler method for path " + lookupPath + ", speechlet context " + speechletRequest.getSpeechletContext() +
+            ", speechlet session " + speechletRequest.getSpeechletSession() + ", speechlet request " + speechletRequest.getSpeechletRequest());
+        return super.lookupHandlerMethod(lookupPath, request);
     }
 
     @Override

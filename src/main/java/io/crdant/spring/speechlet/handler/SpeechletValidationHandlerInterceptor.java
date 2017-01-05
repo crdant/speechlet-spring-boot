@@ -1,9 +1,9 @@
-package io.crdant.spring.alexa.speechlet.handler;
+package io.crdant.spring.speechlet.handler;
 
 import com.amazon.speech.Sdk;
 import com.amazon.speech.speechlet.authentication.SpeechletRequestSignatureVerifier;
 import com.amazon.speech.speechlet.verifier.TimestampSpeechletRequestVerifier;
-import io.crdant.spring.alexa.speechlet.web.SpeechletServletRequest;
+import io.crdant.spring.speechlet.web.SpeechletServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -23,7 +23,7 @@ public class SpeechletValidationHandlerInterceptor extends HandlerInterceptorAda
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if ( !(request instanceof SpeechletServletRequest ) ) return false;
+        if ( !(request instanceof SpeechletServletRequest) ) return false;
         SpeechletServletRequest speechletServletRequest = (SpeechletServletRequest) request ;
         return disable.booleanValue() || ( validSignature(speechletServletRequest) && validTimetamp(speechletServletRequest) );
     }

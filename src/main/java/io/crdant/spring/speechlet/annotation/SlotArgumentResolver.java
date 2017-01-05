@@ -1,9 +1,9 @@
-package io.crdant.spring.alexa.annotation;
+package io.crdant.spring.speechlet.annotation;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.SpeechletRequest;
-import io.crdant.spring.alexa.speechlet.web.SpeechletServletRequest;
+import io.crdant.spring.speechlet.web.SpeechletServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;

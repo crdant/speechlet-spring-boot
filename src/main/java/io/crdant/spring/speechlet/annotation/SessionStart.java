@@ -1,6 +1,5 @@
-package io.crdant.spring.alexa.annotation;
+package io.crdant.spring.speechlet.annotation;
 
-import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.Mapping;
 
 import java.lang.annotation.*;
@@ -9,7 +8,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Mapping
-public @interface SessionEnd {
+public @interface SessionStart {
     /**
      * Assign a name to this mapping.
      */

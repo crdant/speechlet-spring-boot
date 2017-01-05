@@ -1,11 +1,9 @@
-package io.crdant.spring.alexa.speechlet.handler.condition;
+package io.crdant.spring.speechlet.handler.condition;
 
-import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.speechlet.Context;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletRequest;
-import io.crdant.spring.alexa.speechlet.web.SpeechletServletRequest;
-import org.apache.commons.io.IOUtils;
+import io.crdant.spring.speechlet.web.SpeechletServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
