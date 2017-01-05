@@ -1,6 +1,7 @@
 package io.crdant.spring.speechlet.beans;
 
 import io.crdant.spring.speechlet.annotation.SlotArgumentResolver;
+import io.crdant.spring.speechlet.handler.SpeechletHandlerMethodAdapter;
 import io.crdant.spring.speechlet.handler.SpeechletHandlerMapping;
 import io.crdant.spring.speechlet.handler.SpeechletValidationHandlerInterceptor;
 import io.crdant.spring.speechlet.method.SpeechletMessageConverter;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -29,6 +31,11 @@ public class SpeechletConfiguration extends WebMvcConfigurerAdapter  {
     @Bean("SpeechletHandlerMapping")
     public HandlerMapping speechletHandlerMapping () {
         return new SpeechletHandlerMapping();
+    }
+
+    @Bean("SpeechletHandlerMethodAdapter")
+    public HandlerAdapter speechletHandlerMappingAdapter () {
+        return new SpeechletHandlerMethodAdapter();
     }
 
     @Override
