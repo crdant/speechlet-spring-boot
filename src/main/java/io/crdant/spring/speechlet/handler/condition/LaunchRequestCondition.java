@@ -10,6 +10,10 @@ import java.util.Set;
 
 public class LaunchRequestCondition extends SpeechletLifecycleRequestCondition<LaunchRequestCondition> {
 
+    public LaunchRequestCondition() {
+        super();
+    }
+
     public LaunchRequestCondition(String... applicationIds) {
         super(applicationIds);
     }

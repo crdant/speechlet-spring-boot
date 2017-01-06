@@ -18,6 +18,11 @@ public abstract class SpeechletLifecycleRequestCondition<T extends SpeechletLife
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Set<String> applicationIds;
 
+    public SpeechletLifecycleRequestCondition() {
+        super();
+        this.applicationIds = new LinkedHashSet<>();
+    }
+
     public SpeechletLifecycleRequestCondition(String... applicationIds) {
         this.applicationIds = new LinkedHashSet<String>() ;
         this.applicationIds.addAll(Arrays.asList(applicationIds));
@@ -62,8 +67,8 @@ public abstract class SpeechletLifecycleRequestCondition<T extends SpeechletLife
     @Override
     public int compareTo(T other, HttpServletRequest request) {
         int same = 0;
-        for ( String intent : other.getApplicationIds() ) {
-            if ( !this.applicationIds.contains(intent) ) return -1 ;
+        for ( String id : other.getApplicationIds() ) {
+            if ( !this.applicationIds.contains(id) ) return -1 ;
         }
         return 0;
     }

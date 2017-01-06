@@ -10,6 +10,10 @@ import java.util.Set;
 
 public class SessionEndedRequestCondition extends SpeechletLifecycleRequestCondition<SessionEndedRequestCondition> {
 
+    public SessionEndedRequestCondition () {
+        super();
+    }
+
     public SessionEndedRequestCondition(String... applicationIds) {
         super(applicationIds);
     }

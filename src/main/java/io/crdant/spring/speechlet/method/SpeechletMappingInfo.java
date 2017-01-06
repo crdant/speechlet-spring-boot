@@ -20,10 +20,10 @@ public class SpeechletMappingInfo implements RequestCondition<SpeechletMappingIn
                                 SessionEndedRequestCondition sessionEndedRequestCondition)
     {
         this.name = name;
-        this.launchRequestCondition = launchRequestCondition;
-        this.sessionStartedRequestCondition = sessionStartedRequestCondition;
-        this.intentRequestCondition = intentRequestCondition;
-        this.sessionEndedRequestCondition = sessionEndedRequestCondition;
+        this.launchRequestCondition = ( launchRequestCondition != null ) ? launchRequestCondition : new LaunchRequestCondition();
+        this.sessionStartedRequestCondition = ( sessionStartedRequestCondition != null ) ? sessionStartedRequestCondition : new SessionStartedRequestCondition();
+        this.intentRequestCondition = ( intentRequestCondition != null ) ? intentRequestCondition : new IntentRequestCondition();
+        this.sessionEndedRequestCondition = ( sessionEndedRequestCondition != null ) ? sessionEndedRequestCondition : new SessionEndedRequestCondition();
     }
 
     @Override

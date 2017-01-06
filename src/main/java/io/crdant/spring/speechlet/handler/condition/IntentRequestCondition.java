@@ -21,6 +21,11 @@ public class IntentRequestCondition extends AbstractSpeechletRequestCondition<In
     private final String applicationId ;
     private final Set<String> intents ;
 
+    public IntentRequestCondition() {
+        this.applicationId = "" ;
+        this.intents = new LinkedHashSet<String>() ;
+    }
+
     public IntentRequestCondition(String applicationId, String... intents) {
         this.applicationId = applicationId ;
         this.intents = new LinkedHashSet<String>() ;
