@@ -1,4 +1,4 @@
-package io.crdant.spring.speechlet.handler;
+package io.crdant.spring.speechlet.web.filter;
 
 import com.amazon.speech.Sdk;
 import com.amazon.speech.speechlet.authentication.SpeechletRequestSignatureVerifier;
@@ -6,14 +6,17 @@ import com.amazon.speech.speechlet.verifier.TimestampSpeechletRequestVerifier;
 import io.crdant.spring.speechlet.web.SpeechletServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class SpeechletValidationHandlerInterceptor extends HandlerInterceptorAdapter {
+public class SpeechletValidationServletFilter extends OncePerRequestFilter {
 
     @Value("${speechlet.validation.disable}")
     Boolean disable ;
@@ -22,10 +25,27 @@ public class SpeechletValidationHandlerInterceptor extends HandlerInterceptorAda
     Long tolerance ;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if ( !(request instanceof SpeechletServletRequest) ) return false;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException
+    {
+        if ( logger.isDebugEnabled() ) {
+            logger.debug("Validating speechlet execution");
+        }
+
+        if (!(request instanceof SpeechletServletRequest)) {
+            response.sendError( HttpServletResponse.SC_BAD_REQUEST ) ;
+            return ;
+        }
+
         SpeechletServletRequest speechletServletRequest = (SpeechletServletRequest) request ;
-        return disable.booleanValue() || ( validSignature(speechletServletRequest) && validTimetamp(speechletServletRequest) );
+        boolean allow = disable.booleanValue() ||
+                ( validSignature(speechletServletRequest) && validTimetamp(speechletServletRequest) && validApplication(speechletServletRequest)) ;
+
+        if ( allow ) {
+            filterChain.doFilter(speechletServletRequest, response);
+        } else {
+            response.sendError( HttpServletResponse.SC_FORBIDDEN, "Request violates security pre-conditions for an Alexa skill" ) ;
+        }
     }
 
     private boolean validSignature(SpeechletServletRequest request) {
@@ -34,6 +54,9 @@ public class SpeechletValidationHandlerInterceptor extends HandlerInterceptorAda
                     request.getHeader(Sdk.SIGNATURE_CERTIFICATE_CHAIN_URL_REQUEST_HEADER));
             return true ;
         } catch ( SecurityException invalidSignature ) {
+            if ( logger.isDebugEnabled() ) {
+                logger.debug("Invalid signature on request: " + invalidSignature.getMessage() );
+            }
             return false ;
         }
     }
@@ -42,4 +65,9 @@ public class SpeechletValidationHandlerInterceptor extends HandlerInterceptorAda
         TimestampSpeechletRequestVerifier verifier = new TimestampSpeechletRequestVerifier(tolerance.longValue(), TimeUnit.SECONDS);
         return verifier.verify(request.getSpeechletRequest(), request.getSpeechletSession());
     }
+
+    private boolean validApplication(SpeechletServletRequest request) {
+        return true ;
+    }
+
 }
