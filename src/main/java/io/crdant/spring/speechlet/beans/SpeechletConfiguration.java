@@ -8,6 +8,7 @@ import io.crdant.spring.speechlet.method.SpeechletMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerAdapter;
@@ -30,7 +31,9 @@ public class SpeechletConfiguration extends WebMvcConfigurerAdapter  {
 
     @Bean("SpeechletHandlerMapping")
     public HandlerMapping speechletHandlerMapping () {
-        return new SpeechletHandlerMapping();
+        SpeechletHandlerMapping handlerMapping = new SpeechletHandlerMapping();
+        handlerMapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
+        return handlerMapping;
     }
 
     @Bean("SpeechletHandlerMethodAdapter")
