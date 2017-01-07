@@ -87,7 +87,7 @@ public class IntentRequestCondition extends AbstractSpeechletRequestCondition<In
     public String toString() {
         return "IntentRequestCondition{" +
                 "applicationId=" + applicationId +
-                "intents=" + intents +
+                ", intents=" + intents +
                 '}';
     }
 
