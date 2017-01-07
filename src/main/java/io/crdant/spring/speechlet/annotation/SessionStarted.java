@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Mapping
-public @interface SessionStart {
+public @interface SessionStarted {
     /**
      * Assign a name to this mapping.
      */
