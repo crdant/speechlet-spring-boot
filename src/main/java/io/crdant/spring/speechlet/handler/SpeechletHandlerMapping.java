@@ -1,18 +1,21 @@
-package io.crdant.spring.alexa.speechlet.handler;
+package io.crdant.spring.speechlet.handler;
 
-import io.crdant.spring.alexa.annotation.*;
-import io.crdant.spring.alexa.speechlet.handler.condition.*;
-import io.crdant.spring.alexa.speechlet.method.SpeechletMappingInfo;
-import io.crdant.spring.alexa.speechlet.web.SpeechletServletRequest;
+import com.amazon.speech.json.SpeechletRequestEnvelope;
+import com.amazon.speech.speechlet.Context;
+import com.amazon.speech.speechlet.Session;
+import io.crdant.spring.speechlet.annotation.*;
+import io.crdant.spring.speechlet.handler.condition.SessionStartedRequestCondition;
+import io.crdant.spring.speechlet.method.SpeechletMappingInfo;
+import io.crdant.spring.speechlet.web.SpeechletServletRequest;
+import io.crdant.spring.speechlet.handler.condition.IntentRequestCondition;
+import io.crdant.spring.speechlet.handler.condition.LaunchRequestCondition;
+import io.crdant.spring.speechlet.handler.condition.SessionEndedRequestCondition;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
-import org.springframework.web.servlet.mvc.condition.RequestCondition;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -22,20 +25,27 @@ public class SpeechletHandlerMapping extends AbstractHandlerMethodMapping<Speech
 
     @Override
     protected boolean isHandler(Class<?> beanType) {
-        return AnnotatedElementUtils.hasAnnotation(beanType, Speechlet.class) ||
-                AnnotatedElementUtils.hasAnnotation(beanType, IntentMapping.class) ||
-                AnnotatedElementUtils.hasAnnotation(beanType, Launch.class) ||
-                AnnotatedElementUtils.hasAnnotation(beanType, SessionStart.class) ||
+        return AnnotatedElementUtils.hasAnnotation(beanType, Speechlet.class) || AnnotatedElementUtils.hasAnnotation(beanType, IntentMapping.class) ||
+                AnnotatedElementUtils.hasAnnotation(beanType, Launch.class) || AnnotatedElementUtils.hasAnnotation(beanType, SessionStart.class) ||
                 AnnotatedElementUtils.hasAnnotation(beanType, SessionEnd.class) ;
     }
 
 
     @Override
     protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
-        SpeechletServletRequest speechletRequest = (SpeechletServletRequest) request ;
-        logger.debug("looking up handler method for path " + lookupPath + ", speechlet context " + speechletRequest.getSpeechletContext() +
-            ", speechlet session " + speechletRequest.getSpeechletSession() + ", speechlet request " + speechletRequest.getSpeechletRequest());
-        return super.lookupHandlerMethod(lookupPath, request);
+        SpeechletServletRequest speechletServletRequest = (SpeechletServletRequest) request ;
+        logger.debug("looking up handler method for path " + lookupPath + ", request path " + request.getPathTranslated() +
+                        ", request context path " + speechletServletRequest.getContextPath() +
+                        ", speechlet context " + speechletServletRequest.getSpeechletContext() +
+                        ", speechlet session " + speechletServletRequest.getSpeechletSession() +
+                        ", speechlet request " + speechletServletRequest.getSpeechletRequest());
+        logger.debug("speechletServletRequest: " + new String(speechletServletRequest.getSerializedRequest()));
+        String derivedPath = lookupPath + "/" + speechletServletRequest.getApplicationId();
+        if ( speechletServletRequest.isIntentRequest() ) lookupPath = lookupPath + "/" + speechletServletRequest.getIntentName();
+        if ( speechletServletRequest.isLaunchRequest() ) lookupPath = lookupPath + "/launch";
+        if ( speechletServletRequest.isSessionStartedRequest() ) lookupPath = lookupPath + "/sessionStart";
+        if ( speechletServletRequest.isSessionEndedRequest()  ) lookupPath = lookupPath + "/sessionEnd";
+        return super.lookupHandlerMethod(derivedPath, request);
     }
 
     @Override
@@ -54,7 +64,7 @@ public class SpeechletHandlerMapping extends AbstractHandlerMethodMapping<Speech
 
         Speechlet speechlet = AnnotatedElementUtils.findMergedAnnotation(typeElement, Speechlet.class);
         if (speechlet != null) {
-            name = name + "/" + speechlet.value();
+            name = name + "/" + speechlet.value()[0];
             applicationId = speechlet.value()[0];
 
             Launch launch = AnnotatedElementUtils.findMergedAnnotation(method, Launch.class);
@@ -70,9 +80,10 @@ public class SpeechletHandlerMapping extends AbstractHandlerMethodMapping<Speech
             }
 
             IntentMapping intent = AnnotatedElementUtils.findMergedAnnotation(method, IntentMapping.class);
+            System.out.println("Working with method " + method.getClass().getCanonicalName() + "." + method.getName());
             if (intent != null || method.getName().equals("onIntent")) {
                 handler = true;
-                name = name + "/" + intent.value();
+                name = name + "/" + intent.value()[0];
                 intentRequestCondition = new IntentRequestCondition(applicationId, intent.value());
             }
 
@@ -114,6 +125,11 @@ public class SpeechletHandlerMapping extends AbstractHandlerMethodMapping<Speech
 
     @Override
     protected Comparator<SpeechletMappingInfo> getMappingComparator(HttpServletRequest request) {
-        return null;
+        return new Comparator<SpeechletMappingInfo>() {
+            @Override
+            public int compare(SpeechletMappingInfo first, SpeechletMappingInfo second) {
+                return first.compareTo(second, request);
+            }
+        };
     }
 }
