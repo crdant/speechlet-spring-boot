@@ -1,9 +1,8 @@
 package io.crdant.spring.speechlet.web;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
-import com.amazon.speech.speechlet.Context;
-import com.amazon.speech.speechlet.Session;
-import com.amazon.speech.speechlet.SpeechletRequest;
+import com.amazon.speech.slu.Intent;
+import com.amazon.speech.speechlet.*;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,16 +27,14 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
         try {
             this.serializedRequest = IOUtils.toByteArray(request.getInputStream());
             SpeechletRequestEnvelope<?> requestEnvelope = SpeechletRequestEnvelope.fromJson(serializedRequest);
-
             incomingSpeechletContext = requestEnvelope.getContext();
             incomingSpeechletSession = requestEnvelope.getSession();
             incomingSpeechletRequest = requestEnvelope.getRequest();
 
-            this.speechletContext = speechletContext;
-            this.speechletSession = speechletSession;
-            this.speechletRequest = speechletRequest;
-            logger.info("Processed speechlet request and made its components available as part of the request.");
-
+            this.speechletContext = incomingSpeechletContext;
+            this.speechletSession = incomingSpeechletSession;
+            this.speechletRequest = incomingSpeechletRequest;
+            logger.info("Processed speechlet request and made its components available as part of the request");
         } catch (Exception e) {
             logger.info("Not a speechlet request. Request content cached and available for reading.");
         }
@@ -45,6 +42,36 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
 
     public boolean isForSpeechlet () {
         return getSpeechletContext() != null && getSpeechletSession() != null && getSpeechletRequest() != null ;
+    }
+
+    public boolean isLaunchRequest() {
+        return ( speechletRequest instanceof LaunchRequest );
+    }
+
+    public boolean isSessionStartedRequest() {
+        return ( speechletRequest instanceof SessionStartedRequest );
+    }
+
+    public boolean isIntentRequest() {
+        return ( speechletRequest instanceof IntentRequest );
+    }
+
+    public boolean isSessionEndedRequest() {
+        return ( speechletRequest instanceof SessionEndedRequest );
+    }
+
+    public String getApplicationId() {
+        return getSpeechletSession().getApplication().getApplicationId();
+    }
+
+    public Intent getIntent() {
+        if ( !isIntentRequest() ) return null ;
+        return ((IntentRequest)speechletRequest).getIntent() ;
+    }
+
+    public String getIntentName() {
+        if ( !(speechletRequest instanceof IntentRequest ) ) return null ;
+        return ((IntentRequest)speechletRequest).getIntent().getName() ;
     }
 
     public Context getSpeechletContext() {
