@@ -67,6 +67,8 @@ public abstract class SpeechletLifecycleRequestCondition<T extends SpeechletLife
     @Override
     public int compareTo(T other, HttpServletRequest request) {
         int same = 0;
+        if ( ! ( other.getClass().isAssignableFrom(this.getClass()) ) ) return -1 ;
+
         for ( String id : other.getApplicationIds() ) {
             if ( !this.applicationIds.contains(id) ) return -1 ;
         }
