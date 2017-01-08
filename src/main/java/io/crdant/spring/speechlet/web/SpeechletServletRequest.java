@@ -17,6 +17,7 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
     private Session speechletSession ;
     private SpeechletRequest speechletRequest;
     private byte[] serializedRequest ;
+    SpeechletRequestEnvelope<?> requestEnvelope;
 
     public SpeechletServletRequest(HttpServletRequest request) {
         super(request);
@@ -26,7 +27,7 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
 
         try {
             this.serializedRequest = IOUtils.toByteArray(request.getInputStream());
-            SpeechletRequestEnvelope<?> requestEnvelope = SpeechletRequestEnvelope.fromJson(serializedRequest);
+            this.requestEnvelope = SpeechletRequestEnvelope.fromJson(serializedRequest);
             incomingSpeechletContext = requestEnvelope.getContext();
             incomingSpeechletSession = requestEnvelope.getSession();
             incomingSpeechletRequest = requestEnvelope.getRequest();
@@ -36,7 +37,8 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
             this.speechletRequest = incomingSpeechletRequest;
             logger.info("Processed speechlet request and made its components available as part of the request");
         } catch (Exception e) {
-            logger.info("Not a speechlet request. Request content cached and available for reading.");
+            logger.error("Not a speechlet request. Request content cached and available for reading.");
+            throw new IllegalArgumentException("Not a speechlet request");
         }
     }
 
@@ -97,4 +99,7 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
         return null;
     }
 
+    public SpeechletRequestEnvelope<?> getRequestEnvelope() {
+        return this.requestEnvelope ;
+    }
 }
