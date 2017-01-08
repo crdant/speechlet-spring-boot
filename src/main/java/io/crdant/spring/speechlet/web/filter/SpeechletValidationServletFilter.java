@@ -49,6 +49,7 @@ public class SpeechletValidationServletFilter extends OncePerRequestFilter {
     }
 
     private boolean validSignature(SpeechletServletRequest request) {
+        logger.debug("testing signature");
         try {
             SpeechletRequestSignatureVerifier.checkRequestSignature(request.getSerializedRequest(), request.getHeader(Sdk.SIGNATURE_REQUEST_HEADER),
                     request.getHeader(Sdk.SIGNATURE_CERTIFICATE_CHAIN_URL_REQUEST_HEADER));
@@ -62,11 +63,14 @@ public class SpeechletValidationServletFilter extends OncePerRequestFilter {
     }
 
     private boolean validTimetamp(SpeechletServletRequest request) {
+        logger.debug("testing timestamp");
+
         TimestampSpeechletRequestVerifier verifier = new TimestampSpeechletRequestVerifier(tolerance.longValue(), TimeUnit.SECONDS);
         return verifier.verify(request.getSpeechletRequest(), request.getSpeechletSession());
     }
 
     private boolean validApplication(SpeechletServletRequest request) {
+        logger.debug("will test the application ids here someday...");
         return true ;
     }
 

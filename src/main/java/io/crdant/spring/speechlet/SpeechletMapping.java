@@ -8,20 +8,20 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.WebApplicationObjectSupport;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class SpeechletMapping extends WebApplicationObjectSupport implements InitializingBean {
 
-    protected Map<String,SpeechletV2> speechletMap;
+    protected Map<String,List<SpeechletV2>> speechletMap;
 
     public SpeechletMapping () {
-        this.speechletMap = new LinkedHashMap<String,SpeechletV2>();
+        this.speechletMap = new LinkedHashMap<String,List<SpeechletV2>>();
     }
 
-    public SpeechletV2 lookupSpeechlet(String applicationId) {
+    public List<SpeechletV2> lookupSpeechlet(String applicationId) {
+        logger.debug("looking up speechlet for application " + applicationId);
+        logger.debug("entry: " + speechletMap.get(applicationId));
         if( speechletMap.get(applicationId) != null ) return speechletMap.get(applicationId);
         else return speechletMap.get("default");
     }
@@ -54,7 +54,8 @@ public class SpeechletMapping extends WebApplicationObjectSupport implements Ini
                     applicationId = annotation.value()[0];
                 }
                 logger.info("Mapping application " + applicationId + " to Speechlet bean" + beanName);
-                speechletMap.put(applicationId, speechlet);
+                speechletMap.putIfAbsent(applicationId,new ArrayList<SpeechletV2>());
+                speechletMap.get(applicationId).add(speechlet);
             }
         }
     }

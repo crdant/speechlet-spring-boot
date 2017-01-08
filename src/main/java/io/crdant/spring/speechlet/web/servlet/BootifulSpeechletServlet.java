@@ -13,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 @Component
 public class BootifulSpeechletServlet extends HttpServlet {
@@ -26,29 +29,24 @@ public class BootifulSpeechletServlet extends HttpServlet {
     @Autowired
     SpeechletMapping mapping ;
 
-    protected SpeechletV2 speechlet ;
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        SpeechletServletRequest speechletServletRequest = null ;
-
-        try {
-            speechletServletRequest = new SpeechletServletRequest(request);
-        } catch ( IllegalArgumentException ex ) {
-            int statusCode = HttpServletResponse.SC_BAD_REQUEST;
-            response.sendError(statusCode, ex.getMessage());
-            return;
-        }
-
-        SpeechletV2 speechlet = lookupSpeechlet(speechletServletRequest);
+        // this is assured by the servlet filter before we get here
+        SpeechletServletRequest speechletServletRequest = (SpeechletServletRequest) request ;
+        List<SpeechletV2> speechlets = lookupSpeechlet(speechletServletRequest);
+        logger.debug("speechlets: " + speechlets);
 
         byte[] outputBytes = null ;
         try {
-            // Dispatch request to Speechlet
-            SpeechletRequestDispatcher dispatcher = new SpeechletRequestDispatcher(speechlet);
-            SpeechletResponseEnvelope responseEnvelope =
-                    dispatcher.dispatchSpeechletCall(speechletServletRequest.getRequestEnvelope(), speechletServletRequest.getSpeechletSession());
-            outputBytes = responseEnvelope.toJsonBytes();
+            for ( SpeechletV2 speechlet : speechlets ) {
+                SpeechletRequestDispatcher dispatcher = new SpeechletRequestDispatcher(speechlet);
+                SpeechletResponseEnvelope responseEnvelope =
+                        dispatcher.dispatchSpeechletCall(speechletServletRequest.getRequestEnvelope(), speechletServletRequest.getSpeechletSession());
+                if ( responseEnvelope != null ) {
+                    outputBytes = responseEnvelope.toJsonBytes();
+                    break ;
+                }
+            }
         } catch (SpeechletRequestHandlerException | SecurityException ex) {
             int statusCode = HttpServletResponse.SC_BAD_REQUEST;
             logger.error("Exception occurred in doPost, returning status code {}", statusCode, ex);
@@ -80,8 +78,10 @@ public class BootifulSpeechletServlet extends HttpServlet {
      * @param request
      * @return
      */
-    protected SpeechletV2 lookupSpeechlet (SpeechletServletRequest request ) {
-        return mapping.lookupSpeechlet(request.getApplicationId());
+    protected List<SpeechletV2> lookupSpeechlet (SpeechletServletRequest request ) {
+        List<SpeechletV2> speechlets = mapping.lookupSpeechlet(request.getApplicationId());
+        logger.debug("speechlets I found: " + speechlets);
+        return speechlets;
     }
 
 }

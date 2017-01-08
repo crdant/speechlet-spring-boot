@@ -3,25 +3,29 @@ package io.crdant.spring.speechlet.web.servlet;
 import io.crdant.spring.speechlet.web.filter.SpeechletRequestServletFilter;
 import io.crdant.spring.speechlet.web.filter.SpeechletValidationServletFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Ordered;
+import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.Servlet;
+import javax.servlet.*;
+import java.io.IOException;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@ComponentScan("io.crdant.spring.speechlet")
+@ComponentScan("io.crdant")
 public class SpeechletServletApplication extends SpringBootServletInitializer {
 
     @Autowired
-    Servlet speechletServlet ;
+    BootifulSpeechletServlet speechletServlet ;
 
     @Autowired
     SpeechletRequestServletFilter speechletRequestFilter;
@@ -29,10 +33,10 @@ public class SpeechletServletApplication extends SpringBootServletInitializer {
     @Autowired
     SpeechletValidationServletFilter speechletValidationFilter;
 
-    @SuppressWarnings("serial")
     @Bean
     public Servlet dispatcherServlet() {
-        return speechletServlet;
+        return new BootifulSpeechletServlet();
+        // return speechletServlet;
     }
 
     @Override
@@ -58,5 +62,10 @@ public class SpeechletServletApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(SpeechletServletApplication.class, args);
+    }
+
+    @Bean
+    RestTemplate restTemplate () {
+        return new RestTemplate() ;
     }
 }
