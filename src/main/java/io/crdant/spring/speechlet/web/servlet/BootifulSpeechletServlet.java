@@ -66,8 +66,6 @@ public class BootifulSpeechletServlet extends HttpServlet {
             response.setContentLength(outputBytes.length);
             out.write(outputBytes);
         }
-        logger.debug("About to call the superclass, you should have seen some output by now");
-        super.doPost(request, response);
     }
 
     /**
