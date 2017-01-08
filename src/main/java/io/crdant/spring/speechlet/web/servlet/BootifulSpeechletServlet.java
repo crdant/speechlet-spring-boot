@@ -42,7 +42,8 @@ public class BootifulSpeechletServlet extends HttpServlet {
                 SpeechletRequestDispatcher dispatcher = new SpeechletRequestDispatcher(speechlet);
                 SpeechletResponseEnvelope responseEnvelope =
                         dispatcher.dispatchSpeechletCall(speechletServletRequest.getRequestEnvelope(), speechletServletRequest.getSpeechletSession());
-                if ( responseEnvelope != null ) {
+                logger.debug("response: " + responseEnvelope.getResponse());
+                if ( responseEnvelope != null && responseEnvelope.getResponse() != null ) {
                     outputBytes = responseEnvelope.toJsonBytes();
                     break ;
                 }
@@ -78,7 +79,6 @@ public class BootifulSpeechletServlet extends HttpServlet {
      */
     protected List<SpeechletV2> lookupSpeechlet (SpeechletServletRequest request ) {
         List<SpeechletV2> speechlets = mapping.lookupSpeechlet(request.getApplicationId());
-        logger.debug("speechlets I found: " + speechlets);
         return speechlets;
     }
 
