@@ -1,6 +1,5 @@
 package io.crdant.spring.speechlet.web.servlet;
 
-import io.crdant.spring.speechlet.web.filter.SpeechletRequestServletFilter;
 import io.crdant.spring.speechlet.web.filter.SpeechletValidationServletFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
