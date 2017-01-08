@@ -4,7 +4,9 @@ import com.amazon.speech.Sdk;
 import com.amazon.speech.speechlet.authentication.SpeechletRequestSignatureVerifier;
 import com.amazon.speech.speechlet.verifier.TimestampSpeechletRequestVerifier;
 import io.crdant.spring.speechlet.web.SpeechletServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,17 +26,15 @@ public class SpeechletValidationServletFilter extends OncePerRequestFilter {
     @Value("${speechlet.timestamp.tolerance}")
     Long tolerance ;
 
+    @Autowired
+    ApplicationContext applicationContext ;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException
     {
         if ( logger.isDebugEnabled() ) {
             logger.debug("Validating speechlet execution");
-        }
-
-        if (!(request instanceof SpeechletServletRequest)) {
-            response.sendError( HttpServletResponse.SC_BAD_REQUEST ) ;
-            return ;
         }
 
         SpeechletServletRequest speechletServletRequest = (SpeechletServletRequest) request ;

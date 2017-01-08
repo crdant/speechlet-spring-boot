@@ -1,5 +1,6 @@
 package io.crdant.spring.speechlet.web.servlet;
 
+import io.crdant.spring.speechlet.web.filter.SpeechletRequestServletFilter;
 import io.crdant.spring.speechlet.web.filter.SpeechletValidationServletFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -23,6 +24,9 @@ public class SpeechletServletApplication extends SpringBootServletInitializer {
     Servlet speechletServlet ;
 
     @Autowired
+    SpeechletRequestServletFilter speechletRequestFilter;
+
+    @Autowired
     SpeechletValidationServletFilter speechletValidationFilter;
 
     @SuppressWarnings("serial")
@@ -34,6 +38,14 @@ public class SpeechletServletApplication extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(SpeechletServletApplication.class);
+    }
+
+    @Bean
+    public FilterRegistrationBean speechletRequestSerlvetFilter () {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(speechletRequestFilter);
+        registration.setOrder(Ordered.LOWEST_PRECEDENCE + 1);
+        return registration;
     }
 
     @Bean
