@@ -1,4 +1,4 @@
-package io.crdant.spring.util;
+package io.crdant.spring.speechlet.util;
 
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
