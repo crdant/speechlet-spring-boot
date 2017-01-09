@@ -4,8 +4,10 @@ import io.crdant.spring.speechlet.web.filter.SpeechletRequestServletFilter;
 import io.crdant.spring.speechlet.web.filter.SpeechletValidationServletFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,10 +29,14 @@ public class SpeechletServletConfiguration extends SpringBootServletInitializer 
     @Autowired
     SpeechletValidationServletFilter speechletValidationFilter;
 
-    @Bean
-    public Servlet dispatcherServlet() {
-        return new BootifulSpeechletServlet();
-        // return speechletServlet;
+    @Bean(name="speechletServletRegistration")
+    @ConditionalOnBean(value=io.crdant.spring.speechlet.web.servlet.BootifulSpeechletServlet.class)
+    public ServletRegistrationBean speechletServletRegistration() {
+        ServletRegistrationBean registration = new ServletRegistrationBean();
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registration.setServlet(speechletServlet);
+        // registration.setEnabled(false);
+        return registration;
     }
 
     @Override
@@ -54,8 +60,4 @@ public class SpeechletServletConfiguration extends SpringBootServletInitializer 
         return registration;
     }
 
-    @Bean
-    RestTemplate restTemplate () {
-        return new RestTemplate() ;
-    }
 }
