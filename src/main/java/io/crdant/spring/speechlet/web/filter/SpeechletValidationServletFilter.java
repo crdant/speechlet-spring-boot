@@ -40,18 +40,24 @@ public class SpeechletValidationServletFilter extends OncePerRequestFilter  {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException
     {
-        if ( logger.isDebugEnabled() ) {
-            logger.debug("Validating speechlet execution");
-        }
 
-        SpeechletServletRequest speechletServletRequest = (SpeechletServletRequest) request ;
-        boolean allow = disable.booleanValue() ||
-                ( validSignature(speechletServletRequest) && validTimetamp(speechletServletRequest) && validApplication(speechletServletRequest)) ;
+        if ( ( request instanceof SpeechletServletRequest && ((SpeechletServletRequest)request).isForSpeechlet() )) {
+            logger.debug("request " + request + " appears to be a speechlet: request.isForSpeechet() = " + ((SpeechletServletRequest) request).isForSpeechlet());
 
-        if ( allow ) {
-            filterChain.doFilter(speechletServletRequest, response);
+            SpeechletServletRequest speechletServletRequest = (SpeechletServletRequest) request;
+            if (logger.isDebugEnabled()) {
+                logger.debug("Validating speechlet execution for: " + speechletServletRequest.getApplicationId());
+            }
+
+            boolean allow = disable.booleanValue() ||
+                    (validSignature(speechletServletRequest) && validTimetamp(speechletServletRequest) && validApplication(speechletServletRequest));
+            if (allow) {
+                filterChain.doFilter(speechletServletRequest, response);
+            } else {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Request violates security pre-conditions for an Alexa skill");
+            }
         } else {
-            response.sendError( HttpServletResponse.SC_FORBIDDEN, "Request violates security pre-conditions for an Alexa skill" ) ;
+            filterChain.doFilter(request, response);
         }
     }
 

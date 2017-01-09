@@ -32,6 +32,9 @@ public class BootifulSpeechletServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // this is assured by the servlet filter before we get here
+        if ( ! ( request instanceof SpeechletServletRequest )) {
+            return ;
+        }
         SpeechletServletRequest speechletServletRequest = (SpeechletServletRequest) request ;
         List<SpeechletV2> speechlets = lookupSpeechlet(speechletServletRequest);
         logger.debug("speechlets: " + speechlets);

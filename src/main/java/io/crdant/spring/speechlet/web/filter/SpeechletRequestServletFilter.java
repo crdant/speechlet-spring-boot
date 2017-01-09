@@ -3,6 +3,7 @@ package io.crdant.spring.speechlet.web.filter;
 import io.crdant.spring.speechlet.web.SpeechletServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,11 +18,15 @@ public class SpeechletRequestServletFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException
     {
-        HttpServletRequest speechletRequest = request;
+        HttpServletRequest requestWrapper = new ContentCachingRequestWrapper(request);
         if (!(request instanceof SpeechletServletRequest)) {
-            speechletRequest = new SpeechletServletRequest(request);
+            try {
+                requestWrapper = new SpeechletServletRequest(requestWrapper);
+            } catch ( IllegalArgumentException notSpeechlet ) {
+                if ( logger.isTraceEnabled() ) logger.trace("Request is not for a speechlet, forwarding a cached copy of the original request");
+            }
         }
-        filterChain.doFilter(speechletRequest, response);
+        filterChain.doFilter(requestWrapper, response);
     }
 
 }
