@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import java.util.Arrays;
 
 public class SpeechletServletRequest extends HttpServletRequestWrapper {
     public static final Logger logger = LoggerFactory.getLogger(SpeechletServletRequest.class);
@@ -28,22 +29,19 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
         try {
             this.serializedRequest = IOUtils.toByteArray(request.getInputStream());
             this.requestEnvelope = SpeechletRequestEnvelope.fromJson(serializedRequest);
-            incomingSpeechletContext = requestEnvelope.getContext();
-            incomingSpeechletSession = requestEnvelope.getSession();
-            incomingSpeechletRequest = requestEnvelope.getRequest();
+            this.speechletContext = requestEnvelope.getContext();
+            this.speechletSession = requestEnvelope.getSession();
+            this.speechletRequest = requestEnvelope.getRequest();
 
-            this.speechletContext = incomingSpeechletContext;
-            this.speechletSession = incomingSpeechletSession;
-            this.speechletRequest = incomingSpeechletRequest;
             logger.info("Processed speechlet request and made its components available as part of the request");
         } catch (Exception e) {
-            logger.error("Not a speechlet request. Request content cached and available for reading.");
+            logger.info("Not a speechlet request. Request content cached and available for reading.");
             throw new IllegalArgumentException("Not a speechlet request");
         }
     }
 
     public boolean isForSpeechlet () {
-        return getSpeechletContext() != null && getSpeechletSession() != null && getSpeechletRequest() != null ;
+        return getSpeechletSession() != null && getSpeechletRequest() != null ;
     }
 
     public boolean isLaunchRequest() {
@@ -101,5 +99,15 @@ public class SpeechletServletRequest extends HttpServletRequestWrapper {
 
     public SpeechletRequestEnvelope<?> getRequestEnvelope() {
         return this.requestEnvelope ;
+    }
+
+    @Override
+    public String toString() {
+        return "SpeechletServletRequest{" +
+                "speechletContext=" + speechletContext +
+                ", speechletSession=" + speechletSession +
+                ", speechletRequest=" + speechletRequest +
+                ", serializedRequest=" + Arrays.toString(serializedRequest) +
+                '}';
     }
 }
