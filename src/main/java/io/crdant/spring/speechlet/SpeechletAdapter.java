@@ -1,11 +1,13 @@
 package io.crdant.spring.speechlet;
 
 import com.amazon.speech.json.SpeechletRequestEnvelope;
-import com.amazon.speech.slu.Intent;
+import com.amazon.speech.slu.*;
 import com.amazon.speech.speechlet.*;
 import io.crdant.spring.speechlet.annotation.*;
+import io.crdant.spring.speechlet.annotation.Slot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.SimpleTypeConverter;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,8 +40,6 @@ public class SpeechletAdapter implements SpeechletV2 {
     }
 
     private void mapIntents(Object speechletBean) {
-        logger.debug("Mapping intents on bean" + speechletBean);
-
         List<Method> methods = Arrays.asList(speechletBean.getClass().getMethods());
         for ( Method method : methods ) {
             logger.debug("determining if method " + method.getName() + " services intents");
@@ -51,7 +51,7 @@ public class SpeechletAdapter implements SpeechletV2 {
                 IntentMapping intent = AnnotationUtils.findAnnotation(method, IntentMapping.class);
                 logger.debug("looked for annotation, found: " + intent);
                 if (intent != null) {
-                    logger.debug("intent annotation was found, adding a mapping for " + intent.value()[0] + " to method " + method);
+                    logger.info("Adding a mapping for " + intent.value()[0] + " to method " + method);
                     intentMapping.put(intent.value()[0], method);
                 }
             }
@@ -155,6 +155,11 @@ public class SpeechletAdapter implements SpeechletV2 {
         if ( intentMethod == null ) return null ;
 
         logger.debug("intent " + intent.getName() + " serviced by method " + intentMethod + " (mapping[" + intent.getName() + "] = " + intentMapping.get(intent.getName()) +")");
+
+        return invokeIntentMethod(requestEnvelope, intent, intentMethod);
+    }
+
+    private SpeechletResponse invokeIntentMethod(SpeechletRequestEnvelope<IntentRequest> requestEnvelope, Intent intent, Method intentMethod) {
         Class<?> parameterTypes[] = intentMethod.getParameterTypes() ;
         try {
             if (parameterTypes.length > 1 && parameterTypes[0].equals(SessionStartedRequest.class) && parameterTypes[1].equals(Session.class)) {
@@ -163,15 +168,15 @@ public class SpeechletAdapter implements SpeechletV2 {
                 return (SpeechletResponse) intentMethod.invoke(speechletBean, requestEnvelope);
             } else {
                 // try to fill in slots with annotatations
-                Map<String, com.amazon.speech.slu.Slot> slots = intent.getSlots();
                 Object[] parameterValues = new Object[intentMethod.getParameterCount()];
                 Parameter[] parameters = intentMethod.getParameters() ;
                 for ( int paramIdx = 0 ; paramIdx < parameters.length ; paramIdx++ ) {
                     logger.debug("parameter: " + parameters[paramIdx]);
                     Slot slot = AnnotationUtils.findAnnotation(parameters[paramIdx], Slot.class);
                     if ( slot != null ) {
-                        logger.debug("slot value: " + slots.get(slot.value()).getValue());
-                        parameterValues[paramIdx] = slots.get(slot.value()).getValue();
+                        logger.debug("slot value: " + getSlotValue(intent, slot.value(), parameters[paramIdx].getType()));
+                        logger.debug("paramenter type: " + parameters[paramIdx].getType());
+                        parameterValues[paramIdx] = getSlotValue(intent, slot.value(), parameters[paramIdx].getType());
                     }
                 }
                 return (SpeechletResponse) intentMethod.invoke(speechletBean, parameterValues) ;
@@ -181,6 +186,13 @@ public class SpeechletAdapter implements SpeechletV2 {
         } catch ( InvocationTargetException targetEx ) {
             throw new RuntimeException("Invoked method through an unhandled exception", targetEx );
         }
+    }
+
+    private <T> T getSlotValue(Intent intent, String slotName, Class<T> clazz) {
+        Map<String, com.amazon.speech.slu.Slot> slots = intent.getSlots();
+        SimpleTypeConverter converter = new SimpleTypeConverter();
+        T slotValue = converter.convertIfNecessary(slots.get(slotName).getValue(), clazz);
+        return slotValue ;
     }
 
     @Override
